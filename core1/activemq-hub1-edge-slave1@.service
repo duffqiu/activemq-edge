@@ -1,0 +1,42 @@
+[Unit]
+Description=activemq edge slave1 for hub1 service unit
+After=docker.service
+Wants=activemq-hub1-edge-slave1-presence@%i.service
+
+[Service]
+Restart=always
+RestartSec=15
+TimeoutSec=120
+EnvironmentFile=/etc/environment
+Environment="DOMAIN_NAME=cluster.duffqiu.org"
+Environment="HUBID=1"
+ExecStartPre=-/usr/bin/docker kill activemq-hub${HUBID}-edge-slave1-%i
+ExecStartPre=-/usr/bin/docker rm  activemq-hub${HUBID}-edge-slave1-%i
+ExecStartPre=-/usr/bin/docker pull duffqiu/activemq-edge:latest
+ExecStart=/usr/bin/docker run  \
+                              --name activemq-hub1-edge-slave1-%i \
+                              -e ZK_STR=zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181 \
+                              -e NODE_ID=%i \
+                              -e ROLE=0 \
+                              -e HUB_ID=${HUBID} \
+                              -e REPLIC_NUM=2 \
+                              -e REPLIC_WEIGHT=50 \
+                              --hostname edge${HUBID}-%i-0.${DOMAIN_NAME} \
+                              --dns-search ${DOMAIN_NAME} \
+                              --dns ${COREOS_PRIVATE_IPV4} \
+                              -p ${COREOS_PRIVATE_IPV4}:61626:61626 \
+                              -p ${COREOS_PRIVATE_IPV4}:61629:61629 \
+                              -p ${COREOS_PRIVATE_IPV4}:1893:1893 \
+                              -p ${COREOS_PRIVATE_IPV4}:5682:5682 \
+                              -p ${COREOS_PRIVATE_IPV4}:61623:61623 \
+                              -p ${COREOS_PRIVATE_IPV4}:61624:61624 \
+                              -v /mirror/activemq-edge/hub${HUBID}/%i/slave1/data:/activemq/data \
+                              duffqiu/activemq-edge:latest
+ExecStop=-/usr/bin/docker stop activemq-hub${HUBID}-edge-slave1-%i
+
+[X-Fleet]
+Conflicts=activemq-hub${HUBID}-edge-slave1@*.service 
+Conflicts=activemq-hub${HUBID}-edge-master@%i.service 
+Conflicts=activemq-hub${HUBID}-edge-slave2@%i.service
+MachineMetadata=role=back
+

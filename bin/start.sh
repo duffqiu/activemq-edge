@@ -38,7 +38,7 @@ fi
 
 
 if [ -z $BROKER_NAME ]; then
-  BROKER_NAME="edge$HUB_ID-$NODE_ID-$ROLE" 
+  BROKER_NAME="amq-edge$HUB_ID-$NODE_ID-$ROLE" 
 fi
 
 
