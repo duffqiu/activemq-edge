@@ -30,6 +30,7 @@ ExecStart=/usr/bin/docker run  \
                               -p ${COREOS_PRIVATE_IPV4}:5672:5672 \
                               -p ${COREOS_PRIVATE_IPV4}:61613:61613 \
                               -p ${COREOS_PRIVATE_IPV4}:61614:61614 \
+                              -p ${COREOS_PRIVATE_IPV4}:8161:8161 \
                               -v /mirror/activemq-edge/hub${HUBID}/%i/master/data:/activemq/data \
                               duffqiu/activemq-edge:latest
 ExecStop=-/usr/bin/docker stop activemq-hub${HUBID}-edge-master-%i
