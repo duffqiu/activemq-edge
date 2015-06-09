@@ -123,7 +123,7 @@ cat >> .nw.config << EOF
           </networkConnector>
 EOF
 
-cat ../conf/activemq.xml.tmp | \
+cat /activemq/conf/activemq.xml.tmp | \
     sed -e "s:%node.id%:$NODE_ID:g" | \
     sed -e "s:%broker.name%:$BROKER_NAME:g" | \
     sed -e "s:%leveldb.weight%:1:g" | \
@@ -137,8 +137,8 @@ cat ../conf/activemq.xml.tmp | \
     sed -e "s#%amqp.port%#$AMQP_PORT#g" | \
     sed -e "s#%stomp.port%#$STOMP_PORT#g" | \
     sed -e "/<networkConnectors>/r .nw.config" > \
-    ../conf/activemq.xml
+    /activemq/conf/activemq.xml
 
 rm -rf .nw.config
 
-./activemq console
+/activemq/bin/activemq console
