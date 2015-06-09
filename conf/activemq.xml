@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+    <!-- Allows us to use system properties as variables in this configuration file -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <value>file:${activemq.conf}/credentials.properties</value>
+        </property>
+    </bean>
+
+   <!-- Allows accessing the server log -->
+    <bean class="io.fabric8.insight.log.log4j.Log4jLogQuery" destroy-method="stop" id="logQuery" init-method="start" lazy-init="false" scope="singleton">
+    </bean>
+
+    <!--
+        The <broker> element is used to configure the ActiveMQ broker.
+    -->
+    <broker xmlns="http://activemq.apache.org/schema/core" brokerName="edge%hub.id%-%node.id%" brokerId="%broker.name%" dataDirectory="${activemq.data}">
+
+        <destinationPolicy>
+            <policyMap>
+              <policyEntries>
+                <policyEntry topic="&gt;">
+                    <!-- The constantPendingMessageLimitStrategy is used to prevent
+                         slow topic consumers to block producers and affect other consumers
+                         by limiting the number of messages that are retained
+                         For more information, see:
+
+                         http://activemq.apache.org/slow-consumer-handling.html
+
+                    -->
+                  <pendingMessageLimitStrategy>
+                    <constantPendingMessageLimitStrategy limit="1000"/>
+                  </pendingMessageLimitStrategy>
+                </policyEntry>
+
+                <policyEntry queue=">" gcInactiveDestinations="true" inactiveTimoutBeforeGC="300000">
+                    <networkBridgeFilterFactory>
+                        <conditionalNetworkBridgeFilterFactory replayWhenNoConsumers="true"/>
+                    </networkBridgeFilterFactory>
+                </policyEntry>  
+                
+                <policyEntry topic=">" producerFlowControl="false"/>
+                
+              </policyEntries>
+            </policyMap>
+        </destinationPolicy>
+
+
+        <!--
+            The managementContext is used to configure how ActiveMQ is exposed in
+            JMX. By default, ActiveMQ uses the MBean server that is started by
+            the JVM. For more information, see:
+
+            http://activemq.apache.org/jmx.html
+        -->
+        <managementContext>
+            <managementContext createConnector="false"/>
+        </managementContext>
+
+        <persistenceAdapter>
+            <replicatedLevelDB
+              directory="${activemq.data}"
+              replicas="%replic.num%"
+              bind="tcp://0.0.0.0:%replic.port%"
+              zkAddress="%zk.str%"
+              zkPath="/activemq/hub/%hub.id%/edge/%node.id%/leveldb-stores"
+              hostname="%broker.name%"
+              weight="%leveldb.weight%"
+              />
+        </persistenceAdapter>
+
+
+          <!--
+            The systemUsage controls the maximum amount of space the broker will
+            use before disabling caching and/or slowing down producers. For more information, see:
+            http://activemq.apache.org/producer-flow-control.html
+          -->
+          <systemUsage>
+            <systemUsage>
+                <memoryUsage>
+                    <memoryUsage percentOfJvmHeap="70"/>
+                </memoryUsage>
+                <storeUsage>
+                    <storeUsage limit="1 gb"/>
+                </storeUsage>
+                <tempUsage>
+                    <tempUsage limit="500 mb"/>
+                </tempUsage>
+            </systemUsage>
+        </systemUsage>
+
+        <!--
+            The transport connectors expose ActiveMQ over a given protocol to
+            clients and other brokers. For more information, see:
+
+            http://activemq.apache.org/configuring-transports.html
+        -->
+        <transportConnectors>
+            <!-- DOS protection, limit concurrent connections to 1000 and frame size to 100MB -->
+            <transportConnector name="openwire" uri="nio://0.0.0.0:%openwire.port%?maximumConnections=20&amp;wireFormat.maxFrameSize=104857600"/>
+            <transportConnector name="amqp+nio" uri="amqp+nio://0.0.0.0:%amqp.port%?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
+            <transportConnector name="stomp+nio" uri="stomp+nio://0.0.0.0:%stomp.port%?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
+            <transportConnector name="mqtt+nio" uri="mqtt+nio://0.0.0.0:%mqtt.port%?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
+            <transportConnector name="ws" uri="ws://0.0.0.0:%ws.port%?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>            
+        </transportConnectors>
+
+        <!-- destroy the spring context on shutdown to stop jetty -->
+        <shutdownHooks>
+            <bean xmlns="http://www.springframework.org/schema/beans" class="org.apache.activemq.hooks.SpringContextHook"/>
+        </shutdownHooks>
+    
+        <!-- will inset the network connectors by the start script-->
+        <networkConnectors>
+        </networkConnectors>
+        
+    </broker>
+
+    <!--
+        Enable web consoles, REST and Ajax APIs and demos
+        The web consoles requires by default login, you can disable this in the jetty.xml file
+
+        Take a look at ${ACTIVEMQ_HOME}/conf/jetty.xml for more details
+    -->
+    <import resource="jetty.xml"/>
+
+</beans>
