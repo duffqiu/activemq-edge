@@ -20,17 +20,11 @@ fi
 let REPLIC_PORT=$BASE_REPLIC_PORT+$ROLE*10
 
 
-let ZK_START=$ZK_NUM-1
-ZK_STR="zookeeper-1:2181"
-
-until [ $ZK_START -gt $ZK_NUM ]; do
-  ZK_STR="$ZK_STR,zookeeper-$ZK_START:2181"
-  let ZK_START+=1
-done
+if [-z $ZK_STR ]; then
+  ZK_STR="zookeeper-1:2181"
+fi
 
 echo "INFO: zookeeper string is $ZK_STR"
-
-echo "INFO: building network broker config"
 
 if [ -z $HUB_ID ]; then
   HUB_ID=1 
