@@ -24,6 +24,11 @@ if [ -z $ZK_STR ]; then
   ZK_STR="zookeeper-1:2181"
 fi
 
+if [ -z $REPLIC_WEIGHT ]; then
+  REPLIC_WEIGHT=1
+fi
+
+
 echo "INFO: zookeeper string is $ZK_STR"
 
 if [ -z $HUB_ID ]; then
@@ -120,7 +125,7 @@ EOF
 cat /activemq/conf/activemq.xml.tmp | \
     sed -e "s:%node.id%:$NODE_ID:g" | \
     sed -e "s:%broker.name%:$BROKER_NAME:g" | \
-    sed -e "s:%leveldb.weight%:1:g" | \
+    sed -e "s:%leveldb.weight%:$REPLIC_WEIGHT:g" | \
     sed -e "s#%zk.str%#$ZK_STR#g" | \
     sed -e "s#%replic.num%#$REPLIC_NUM#g" | \
     sed -e "s#%replic.port%#$REPLIC_PORT#g" | \
