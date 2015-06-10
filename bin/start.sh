@@ -20,7 +20,7 @@ fi
 let REPLIC_PORT=$BASE_REPLIC_PORT+$ROLE*10
 
 
-if [-z $ZK_STR ]; then
+if [ -z $ZK_STR ]; then
   ZK_STR="zookeeper-1:2181"
 fi
 
