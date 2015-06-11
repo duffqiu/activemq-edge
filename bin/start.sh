@@ -5,10 +5,6 @@ if [ -z $ROLE ]; then
   ROLE=0 
 fi
 
-if [ -z $ZK_NUM ]; then
-  ZK_NUM=3 
-fi
-
 if [ -z $REPLIC_NUM ]; then
   REPLIC_NUM=0 
 fi
