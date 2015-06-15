@@ -19,7 +19,7 @@ ExecStart=/usr/bin/docker run  \
                               -e NODE_ID=%i \
                               -e ROLE=1 \
                               -e HUB_ID=${HUBID} \
-                              -e REPLIC_NUM=2 \
+                              -e REPLIC_NUM=0 \
                               -e REPLIC_WEIGHT=50 \
                               --hostname amq-edge${HUBID}-%i-1.${DOMAIN_NAME} \
                               --dns-search ${DOMAIN_NAME} \
