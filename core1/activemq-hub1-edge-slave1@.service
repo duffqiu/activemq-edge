@@ -36,8 +36,8 @@ ExecStart=/usr/bin/docker run  \
 ExecStop=-/usr/bin/docker stop activemq-hub${HUBID}-edge-slave1-%i
 
 [X-Fleet]
-Conflicts=activemq-hub${HUBID}-edge-slave1@*.service 
-Conflicts=activemq-hub${HUBID}-edge-master@%i.service 
-Conflicts=activemq-hub${HUBID}-edge-slave2@%i.service
+Conflicts=activemq-hub1-edge-slave1@*.service 
+Conflicts=activemq-hub1-edge-master@%i.service 
+Conflicts=activemq-hub1-edge-slave2@%i.service
 MachineMetadata=role=back
 

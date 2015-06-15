@@ -97,7 +97,7 @@
         -->
         <transportConnectors>
             <!-- DOS protection, limit concurrent connections to 1000 and frame size to 100MB -->
-            <transportConnector name="openwire" uri="nio://0.0.0.0:%openwire.port%?maximumConnections=20&amp;wireFormat.maxFrameSize=104857600"/>
+            <transportConnector name="openwire" uri="nio://0.0.0.0:%openwire.port%?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
             <transportConnector name="amqp+nio" uri="amqp+nio://0.0.0.0:%amqp.port%?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
             <transportConnector name="stomp+nio" uri="stomp+nio://0.0.0.0:%stomp.port%?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
             <transportConnector name="mqtt+nio" uri="mqtt+nio://0.0.0.0:%mqtt.port%?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
