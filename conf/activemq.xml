@@ -66,6 +66,7 @@
               zkPath="/activemq/hub/%hub.id%/edge/%node.id%/leveldb-stores"
               hostname="%broker.name%"
               weight="%leveldb.weight%"
+              zkSessionTimeout="4s"
               />
         </persistenceAdapter>
 
