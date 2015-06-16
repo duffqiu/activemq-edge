@@ -92,7 +92,7 @@ rm -rf nw.config
 cat >> .nw.config << EOF
           <networkConnector
             name="topic-edge$HUB_ID-$NODE_ID->core$HUB_ID"
-            uri="masterslave:(nio://core$HUB_ID-0:$MASTER_PORT,nio://core$HUB_ID-1:$SLAVE1_PORT,nio://core$HUB_ID-2:$SLAVE2_PORT)"
+            uri="static:failover:(nio://core$HUB_ID-0:$MASTER_PORT,nio://core$HUB_ID-1:$SLAVE1_PORT,nio://core$HUB_ID-2:$SLAVE2_PORT)?randomize=false"
             duplex="true"
             decreaseNetworkConsumerPriority="false"
             networkTTL="3"
@@ -105,7 +105,7 @@ cat >> .nw.config << EOF
           </networkConnector>
           <networkConnector
             name="queue-edge$HUB_ID-$NODE_ID->core$HUB_ID"
-            uri="masterslave:(nio://core$HUB_ID-0:$MASTER_PORT,nio://core$HUB_ID-1:$SLAVE1_PORT,nio://core$HUB_ID-2:$SLAVE2_PORT)"
+            uri="static:failover:(nio://core$HUB_ID-0:$MASTER_PORT,nio://core$HUB_ID-1:$SLAVE1_PORT,nio://core$HUB_ID-2:$SLAVE2_PORT)?randomize=false"
             duplex="true"
             decreaseNetworkConsumerPriority="false"
             networkTTL="3"

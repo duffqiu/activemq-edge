@@ -19,7 +19,7 @@ ExecStart=/usr/bin/docker run  \
                               -e NODE_ID=%i \
                               -e ROLE=0 \
                               -e HUB_ID=${HUBID} \
-                              -e REPLIC_NUM=0 \
+                              -e REPLIC_NUM=2 \
                               -e REPLIC_WEIGHT=100 \
                               --hostname edge${HUBID}-%i-0.${DOMAIN_NAME} \
                               --dns-search ${DOMAIN_NAME} \
