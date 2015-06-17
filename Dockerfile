@@ -1,4 +1,4 @@
-FROM duffqiu/activemq-hub:latest
+FROM duffqiu/activemq-hub:5.12-snapshot
 MAINTAINER duffqiu@gmail.com
 
 ADD bin/start.sh /activemq/bin/start.sh
