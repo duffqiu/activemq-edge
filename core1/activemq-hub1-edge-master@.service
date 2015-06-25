@@ -10,34 +10,29 @@ TimeoutSec=120
 EnvironmentFile=/etc/environment
 Environment="DOMAIN_NAME=cluster.duffqiu.org"
 Environment="HUBID=1"
+Environment="IMAGE_VER=noreplicated"
 ExecStartPre=-/usr/bin/docker kill activemq-hub${HUBID}-edge-master-%i
 ExecStartPre=-/usr/bin/docker rm  activemq-hub${HUBID}-edge-master-%i
-ExecStartPre=-/usr/bin/docker pull duffqiu/activemq-edge:latest
+ExecStartPre=-/usr/bin/docker pull duffqiu/activemq-edge:${IMAGE_VER}
 ExecStart=/usr/bin/docker run  \
                               --name activemq-hub1-edge-master-%i \
-                              -e ZK_STR=zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181 \
                               -e NODE_ID=%i \
                               -e ROLE=0 \
                               -e HUB_ID=${HUBID} \
-                              -e REPLIC_NUM=2 \
-                              -e REPLIC_WEIGHT=100 \
                               --hostname edge${HUBID}-%i-0.${DOMAIN_NAME} \
                               --dns-search ${DOMAIN_NAME} \
                               --dns ${COREOS_PRIVATE_IPV4} \
                               -p ${COREOS_PRIVATE_IPV4}:61616:61616 \
-                              -p ${COREOS_PRIVATE_IPV4}:61619:61619 \
                               -p ${COREOS_PRIVATE_IPV4}:1883:1883 \
                               -p ${COREOS_PRIVATE_IPV4}:5672:5672 \
                               -p ${COREOS_PRIVATE_IPV4}:61613:61613 \
                               -p ${COREOS_PRIVATE_IPV4}:61614:61614 \
                               -p ${COREOS_PRIVATE_IPV4}:8161:8161 \
                               -v /mirror/activemq-edge/hub${HUBID}/%i/master/data:/activemq/data \
-                              duffqiu/activemq-edge:latest
+                              duffqiu/activemq-edge:${IMAGE_VER}
 ExecStop=-/usr/bin/docker stop activemq-hub${HUBID}-edge-master-%i
 
 [X-Fleet]
 Conflicts=activemq-hub1-edge-master@*.service 
-Conflicts=activemq-hub1-edge-slave1@%i.service 
-Conflicts=activemq-hub1-edge-slave2@%i.service
 MachineMetadata=role=back
 

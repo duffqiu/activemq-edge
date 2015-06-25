@@ -9,7 +9,6 @@ RestartSec=30
 EnvironmentFile=/etc/environment
 Environment="HUBID=1"
 Environment="AMQ_EDGE_PORT=61616"
-Environment="AMQ_EDGE_REPLIC_PORT=61619"
 Environment="AMQ_EDGE_MQTT_PORT=1883"
 Environment="AMQ_EDGE_AMQP_PORT=5672"
 Environment="AMQ_EDGE_WS_PORT=61614"
@@ -17,7 +16,6 @@ Environment="AMQ_EDGE_STOMP_PORT=61613"
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/org/duffqiu/cluster/amq-edge${HUBID}-%i-0 '{"host":"${COREOS_PRIVATE_IPV4}","port":${AMQ_EDGE_PORT}}'
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/org/duffqiu/cluster/activemq/hub${HUBID}/edge%i/master '{"host":"${COREOS_PRIVATE_IPV4}","port":${AMQ_EDGE_PORT}}'
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/org/duffqiu/cluster/_tcp/_activemq/_openwire/amq-edge${HUBID}-%i-0 '{"host":"${COREOS_PRIVATE_IPV4}","port":${AMQ_EDGE_PORT}}'
-ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/org/duffqiu/cluster/_tcp/_activemq/_leveldb/amq-edge${HUBID}-%i-0 '{"host":"${COREOS_PRIVATE_IPV4}","port":${AMQ_EDGE_REPLIC_PORT}}'
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/org/duffqiu/cluster/_tcp/_activemq/_stomp/amq-edge${HUBID}-%i-0 '{"host":"${COREOS_PRIVATE_IPV4}","port":${AMQ_EDGE_STOMP_PORT}}'
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/org/duffqiu/cluster/_tcp/_activemq/_mqtt/amq-edge${HUBID}-%i-0 '{"host":"${COREOS_PRIVATE_IPV4}","port":${AMQ_EDGE_MQTT_PORT}}'
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/org/duffqiu/cluster/_tcp/_activemq/_amqp/amq-edge${HUBID}-%i-0 '{"host":"${COREOS_PRIVATE_IPV4}","port":${AMQ_EDGE_AMQP_PORT}}'
@@ -26,4 +24,3 @@ ExecStart=/usr/bin/echo "Set activemq edge %i master for hub ${HUBID} in skydns2
 
 [X-Fleet]
 MachineOf=activemq-hub1-edge-master@%i.service
-MachineMetadata=role=back
